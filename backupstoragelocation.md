@@ -72,4 +72,69 @@ spec:
     #
     # Optional (defaults to 1048576, i.e. 1MB, maximum 104857600, i.e. 100MB).
     blockSizeInBytes: "1048576"
+
+    # Key name in the BSL credential file that holds a container-scoped SAS token.
+    # When set, all other authentication methods (shared key, AAD) are bypassed
+    # and the plugin authenticates using the SAS token alone.
+    #
+    # Use this when only a container-scoped SAS token is available and no account
+    # key or service principal can be provided.
+    #
+    # The SAS token may optionally include a leading "?" which is stripped automatically.
+    #
+    # Optional. When set, storageAccountBlobEndpoint should also be configured.
+    storageAccountSASTokenEnvVar: AZURE_STORAGE_ACCOUNT_ACCESS_KEY
+
+    # Blob service endpoint URL for the storage account.
+    # Required when using storageAccountSASTokenEnvVar with accounts that use Azure DNS
+    # zone endpoints (e.g. https://<account>.z17.blob.storage.azure.net/).
+    #
+    # Set this to the blob service root URL for the storage account, for example:
+    #   storageAccountBlobEndpoint: "https://myaccount.z17.blob.storage.azure.net/"
+    #
+    # If omitted, the standard endpoint https://<storageAccount>.blob.core.windows.net/
+    # is used.
+    #
+    # Optional.
+    storageAccountBlobEndpoint: https://my-account.z17.blob.storage.azure.net/
 ```
+
+## Using SAS token authentication
+
+When only a container-scoped SAS token is available (no account key or service principal), use the following minimal BSL configuration:
+
+```yaml
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: default
+  namespace: velero
+spec:
+  provider: velero.io/azure
+  objectStorage:
+    bucket: my-container
+  config:
+    storageAccount: my-storage-account
+    storageAccountSASTokenEnvVar: AZURE_STORAGE_ACCOUNT_ACCESS_KEY
+    # Required for accounts with Azure DNS zone endpoints:
+    storageAccountBlobEndpoint: https://my-storage-account.z17.blob.storage.azure.net/
+  credential:
+    name: velero-azure-credentials
+    key: cloud
+```
+
+The SAS token must be stored in a Kubernetes Secret in `KEY=VALUE` format, referenced by `spec.credential` on the BSL:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: velero-azure-credentials
+  namespace: velero
+type: Opaque
+stringData:
+  cloud: |
+    AZURE_STORAGE_ACCOUNT_ACCESS_KEY=<sas-token>
+```
+
+The value of `storageAccountSASTokenEnvVar` (`AZURE_STORAGE_ACCOUNT_ACCESS_KEY` above) is the key name looked up in the credential file. The token value may include or omit the leading `?` — both formats are accepted.
