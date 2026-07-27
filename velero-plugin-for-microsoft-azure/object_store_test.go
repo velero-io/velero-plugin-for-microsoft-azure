@@ -186,11 +186,31 @@ func TestInitWithSASToken_MissingTokenInCredentials(t *testing.T) {
 
 	o := &ObjectStore{log: logrus.New()}
 	err = o.initWithSASToken(map[string]string{
-		"storageAccount":         "myaccount",
-		credentialsFileConfigKey: f.Name(),
+		"storageAccount":                    "myaccount",
+		credentialsFileConfigKey:            f.Name(),
+		storageAccountBlobEndpointConfigKey: "https://myaccount.blob.core.windows.net/",
 	}, "MY_SAS_TOKEN_ENV")
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "MY_SAS_TOKEN_ENV")
+}
+
+func TestInitWithSASToken_UseAADConflict(t *testing.T) {
+	o := &ObjectStore{log: logrus.New()}
+	err := o.initWithSASToken(map[string]string{
+		"storageAccount": "myaccount",
+		"useAAD":         "true",
+	}, "MY_SAS_TOKEN_ENV")
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "mutually exclusive")
+}
+
+func TestInitWithSASToken_MissingEndpoint(t *testing.T) {
+	o := &ObjectStore{log: logrus.New()}
+	err := o.initWithSASToken(map[string]string{
+		"storageAccount": "myaccount",
+	}, "MY_SAS_TOKEN_ENV")
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "storageAccountBlobEndpoint is required")
 }
 
 func TestInitWithSASToken_Success(t *testing.T) {
@@ -213,24 +233,6 @@ func TestInitWithSASToken_Success(t *testing.T) {
 	assert.NotNil(t, o.containerGetter)
 	assert.NotNil(t, o.blobGetter)
 	assert.Equal(t, defaultBlockSize, o.blockSize)
-}
-
-func TestInitWithSASToken_DefaultEndpoint(t *testing.T) {
-	f, err := os.CreateTemp("", "azure-creds-*.env")
-	require.NoError(t, err)
-	defer os.Remove(f.Name())
-	_, err = f.WriteString("MY_SAS_TOKEN=sv=2025-05-05&sig=abc123\n")
-	require.NoError(t, err)
-	f.Close()
-
-	o := &ObjectStore{log: logrus.New()}
-	err = o.initWithSASToken(map[string]string{
-		"storageAccount":         "myaccount",
-		credentialsFileConfigKey: f.Name(),
-		// no storageAccountBlobEndpoint, falls back to standard URL
-	}, "MY_SAS_TOKEN")
-	require.NoError(t, err)
-	assert.Contains(t, o.containerGetter.URL(), "myaccount.blob.core.windows.net")
 }
 
 func TestCreateSignedURL_SASMode(t *testing.T) {

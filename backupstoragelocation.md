@@ -76,24 +76,22 @@ spec:
     # Key name in the BSL credential file that holds a container-scoped SAS token.
     # When set, all other authentication methods (shared key, AAD) are bypassed
     # and the plugin authenticates using the SAS token alone.
+    # Cannot be combined with useAAD: "true".
     #
     # Use this when only a container-scoped SAS token is available and no account
     # key or service principal can be provided.
     #
     # The SAS token may optionally include a leading "?" which is stripped automatically.
     #
-    # Optional. When set, storageAccountBlobEndpoint should also be configured.
+    # Optional. When set, storageAccountBlobEndpoint is required.
     storageAccountSASTokenEnvVar: AZURE_STORAGE_ACCOUNT_ACCESS_KEY
 
     # Blob service endpoint URL for the storage account.
-    # Required when using storageAccountSASTokenEnvVar with accounts that use Azure DNS
-    # zone endpoints (e.g. https://<account>.z17.blob.storage.azure.net/).
+    # Required when using storageAccountSASTokenEnvVar.
     #
     # Set this to the blob service root URL for the storage account, for example:
+    #   storageAccountBlobEndpoint: "https://myaccount.blob.core.windows.net/"
     #   storageAccountBlobEndpoint: "https://myaccount.z17.blob.storage.azure.net/"
-    #
-    # If omitted, the standard endpoint https://<storageAccount>.blob.core.windows.net/
-    # is used.
     #
     # Optional.
     storageAccountBlobEndpoint: https://my-account.z17.blob.storage.azure.net/
@@ -116,8 +114,7 @@ spec:
   config:
     storageAccount: my-storage-account
     storageAccountSASTokenEnvVar: AZURE_STORAGE_ACCOUNT_ACCESS_KEY
-    # Required for accounts with Azure DNS zone endpoints:
-    storageAccountBlobEndpoint: https://my-storage-account.z17.blob.storage.azure.net/
+    storageAccountBlobEndpoint: https://my-storage-account.blob.core.windows.net/
   credential:
     name: velero-azure-credentials
     key: cloud

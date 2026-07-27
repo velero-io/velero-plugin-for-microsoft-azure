@@ -49,13 +49,12 @@ const (
 
 	// storageAccountSASTokenEnvVarConfigKey is the BSL config key whose value is the key name
 	// in the credential file holding a container-scoped SAS token.
-	// When set, SAS token auth is used instead of shared key or AAD.
+	// SAS tokens are not Azure AD credentials; when set, the standard Azure credential chain
+	// (service principal, workload identity, managed identity, shared key) is bypassed entirely.
 	storageAccountSASTokenEnvVarConfigKey = "storageAccountSASTokenEnvVar"
 
 	// storageAccountBlobEndpointConfigKey is the BSL config key for the blob service endpoint.
-	// Must be set when using SAS token auth with accounts that use Azure DNS zone endpoints
-	// (e.g. https://<account>.z17.blob.storage.azure.net/) rather than the standard endpoint
-	// (https://<account>.blob.core.windows.net/).
+	// Required when using SAS token auth.
 	storageAccountBlobEndpointConfigKey = "storageAccountBlobEndpoint"
 )
 
@@ -243,6 +242,15 @@ func (o *ObjectStore) initWithSASToken(config map[string]string, sasTokenEnvVar 
 		return errors.New("storageAccount is required in BackupStorageLocation config when using SAS token auth")
 	}
 
+	if config[azure.BSLConfigUseAAD] != "" {
+		return errors.New("useAAD and storageAccountSASTokenEnvVar are mutually exclusive; remove useAAD when using SAS token auth")
+	}
+
+	blobEndpoint := config[storageAccountBlobEndpointConfigKey]
+	if blobEndpoint == "" {
+		return errors.New("storageAccountBlobEndpoint is required in BackupStorageLocation config when using SAS token auth")
+	}
+
 	creds, err := azure.LoadCredentials(config)
 	if err != nil {
 		return errors.Wrap(err, "failed to load credentials file")
@@ -253,10 +261,6 @@ func (o *ObjectStore) initWithSASToken(config map[string]string, sasTokenEnvVar 
 	}
 	sasToken = strings.TrimPrefix(sasToken, "?")
 
-	blobEndpoint := config[storageAccountBlobEndpointConfigKey]
-	if blobEndpoint == "" {
-		blobEndpoint = fmt.Sprintf("https://%s.blob.core.windows.net/", storageAccount)
-	}
 	// ensure the endpoint ends with "/" before appending the SAS token
 	serviceURL := strings.TrimRight(blobEndpoint, "/") + "/?" + sasToken
 
