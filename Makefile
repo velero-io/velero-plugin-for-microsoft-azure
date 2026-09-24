@@ -16,7 +16,7 @@
 BIN ?= velero-plugin-for-microsoft-azure
 
 # This repo's root import path (under GOPATH).
-PKG := github.com/vmware-tanzu/velero-plugin-for-microsoft-azure
+PKG := github.com/velero-io/velero-plugin-for-microsoft-azure
 
 # Where to push the docker image.
 REGISTRY ?= velero
