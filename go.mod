@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/velero-plugin-for-microsoft-azure
+module github.com/velero-io/velero-plugin-for-microsoft-azure
 
 go 1.25.0
 

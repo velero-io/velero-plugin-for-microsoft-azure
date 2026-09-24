@@ -677,6 +677,6 @@ We recommend taking incremental snapshots of Azure Disks since they are more cos
 [28]: https://azure.github.io/azure-workload-identity/docs/installation/mutating-admission-webhook.html
 [29]: https://learn.microsoft.com/en-us/azure/aks/use-oidc-issuer#create-an-aks-cluster-with-oidc-issuer
 [30]: https://learn.microsoft.com/en-us/azure/virtual-machines/disks-incremental-snapshots
-[101]: https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure/workflows/Main%20CI/badge.svg
-[102]: https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure/actions?query=workflow%3A"Main+CI"
-[103]: https://github.com/vmware-tanzu/velero/issues/new/choose
+[101]: https://github.com/velero-io/velero-plugin-for-microsoft-azure/workflows/Main%20CI/badge.svg
+[102]: https://github.com/velero-io/velero-plugin-for-microsoft-azure/actions?query=workflow%3A"Main+CI"
+[103]: https://github.com/velero-io/velero/issues/new/choose
