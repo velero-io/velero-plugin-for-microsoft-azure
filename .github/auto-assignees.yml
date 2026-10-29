@@ -10,11 +10,10 @@ reviewers:
   groups:
     maintainers:
       - sseago
-      - reasonerjt
       - ywk253100
-      - blackpiglet
-      - qiuming-best
       - shubham-pampattiwar
+      - kaovilai
+      - anshulahuja98
 
 options:
   ignore_draft: true
