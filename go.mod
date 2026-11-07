@@ -2,6 +2,8 @@ module github.com/velero-io/velero-plugin-for-microsoft-azure
 
 go 1.27.0
 
+toolchain go1.27.3
+
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.22.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute/v4 v4.2.1
@@ -11,7 +13,7 @@ require (
 	github.com/sirupsen/logrus v1.9.4
 	github.com/spf13/pflag v1.0.10
 	github.com/stretchr/testify v1.11.1
-	github.com/velero-io/velero v0.0.0-20261104073004-8eaef0e9b87d
+	github.com/velero-io/velero v1.19.0-rc.1
 	k8s.io/api v0.36.1
 	k8s.io/apimachinery v0.36.1
 	sigs.k8s.io/azuredisk-csi-driver v1.26.0
