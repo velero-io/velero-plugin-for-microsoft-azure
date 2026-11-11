@@ -36,8 +36,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	veleroplugin "github.com/vmware-tanzu/velero/pkg/plugin/framework"
-	"github.com/vmware-tanzu/velero/pkg/util/azure"
+	veleroplugin "github.com/velero-io/velero/pkg/plugin/framework"
+	"github.com/velero-io/velero/pkg/util/azure"
 )
 
 const (

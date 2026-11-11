@@ -1,1 +1,0 @@
-Update volume_snapshotter to correctly use AAD URI which fixes behavior for Azure Workload Identities
