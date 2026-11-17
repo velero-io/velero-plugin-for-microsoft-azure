@@ -2,7 +2,7 @@ module github.com/velero-io/velero-plugin-for-microsoft-azure
 
 go 1.27.0
 
-toolchain go1.27.3
+toolchain go1.27.4
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.22.0
