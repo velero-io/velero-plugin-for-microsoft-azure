@@ -44,8 +44,13 @@ const (
 	blockSizeConfigKey = "blockSizeInBytes"
 	// blocks must be less than/equal to 100MB in size
 	// ref. https://docs.microsoft.com/en-us/rest/api/storageservices/put-block#uri-parameters
-	maxBlockSize     = 100 * 1024 * 1024
-	defaultBlockSize = 1 * 1024 * 1024
+	maxBlockSize = 100 * 1024 * 1024
+	// defaultBlockSize matches the Azure SDK's default block size for block blob
+	// uploads (azblob.UploadStreamOptions.BlockSize, 4 MiB). Smaller blocks mean
+	// more sequential PutBlock round trips per object, which dominates upload
+	// time on high-latency links.
+	// ref. https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-tune-upload-download-go
+	defaultBlockSize = 4 * 1024 * 1024
 
 	// storageAccountSASTokenEnvVarConfigKey is the BSL config key whose value is the key name
 	// in the credential file holding a container-scoped SAS token.
