@@ -70,8 +70,8 @@ spec:
     # See https://docs.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs#about-block-blobs
     # for more information on block blobs.
     #
-    # Optional (defaults to 1048576, i.e. 1MB, maximum 104857600, i.e. 100MB).
-    blockSizeInBytes: "1048576"
+    # Optional (defaults to 4194304, i.e. 4MB, maximum 104857600, i.e. 100MB).
+    blockSizeInBytes: "4194304"
 
     # Key name in the BSL credential file that holds a container-scoped SAS token.
     # When set, all other authentication methods (shared key, AAD) are bypassed

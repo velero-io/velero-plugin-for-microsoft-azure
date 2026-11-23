@@ -45,10 +45,10 @@ const (
 	// blocks must be less than/equal to 100MB in size
 	// ref. https://docs.microsoft.com/en-us/rest/api/storageservices/put-block#uri-parameters
 	maxBlockSize = 100 * 1024 * 1024
-	// defaultBlockSize matches the Azure SDK's default block size for block blob
-	// uploads (azblob.UploadStreamOptions.BlockSize, 4 MiB). Smaller blocks mean
-	// more sequential PutBlock round trips per object, which dominates upload
-	// time on high-latency links.
+	// defaultBlockSize is a tuning choice for the sequential PutBlock loop in
+	// PutObject: the block size determines how many PutBlock round trips an
+	// object costs, which dominates upload time on high-latency links. 4 MiB
+	// keeps round trips per object low while bounding per-upload buffering.
 	// ref. https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-tune-upload-download-go
 	defaultBlockSize = 4 * 1024 * 1024
 
